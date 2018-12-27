@@ -1,0 +1,36 @@
+1.显示行号
+sed -n '2p' filename
+2.显示打印的范围
+sed -n '2,3p' filename
+3.打印模式匹配行
+sed -n '/xxxx/'p filename
+4. 匹配元字符 
+sed -n '/\$/'p filename
+5.显示整个文件
+sed -n '1,$p' filename
+6.打印行号
+sed -e '/xxxx/=' filename
+7.打印行号及匹配行
+sed -n -e '/xxx/p' -e '/xxx/=' filename
+8.在指定行后面添加
+sed '/xxx/a\xx' filename
+9.替换某行
+sed '/xxx/c\xx' filename
+10.删除某行
+sed '1,3d' filename
+11.替换
+sed 's/xxx/xxx/' filename
+12.全局替换
+sed 's/xx/xxx/g' filename
+13.结果定向输出
+sed 's/xxx/xxx/w resultfile' filename
+14.替换修改字符串
+sed -n 's/xxx/xxx &/p' filename 在前面添加
+sed -n 's/xxx/& xxx/p' filename 在后面添加
+15.从文件中读文本
+sed '/sss/r inputfile' filename
+16.匹配后退出
+sed '/xxx/q' filename
+17.查看控制字符
+sed -n '1,$l' filename
+18.

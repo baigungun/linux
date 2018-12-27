@@ -1,0 +1,8 @@
+1.删除重复字符
+tr -s "[a-z]" < filename
+2.删除空行
+tr -s "[\012]" < filename
+tr -s ["\n"] < filename
+3.大小写转换
+tr "[a-z]" "[A-Z]" <filename  小-大
+tr "[A-Z]" "[a-z]" <filename  大-小
