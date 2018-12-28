@@ -1,0 +1,122 @@
+摘自shell学习第一讲
+1.修改文件权限
+符号模式
+chmod u+x myfile 为自己创建的文件增加可执行权限
+chmod o+w myfile 为其他组用户增加可写入权限
+u 自己
+g 同组
+o 其他组
+a 所有用户
+x 执行权限 
+绝对模式
+chmod -R 644 /usr/local/* 6是自己可读可写 4是同组可读 4是其他组可读
+r 4 w 2 x1 八进制表示 最高权限是7
+ -R表示递归文件夹下 所有文件
+
+2.查看系统用户
+cat /etc/passwd
+
+3.修改文件所属
+chown -R -h people:hadoop  /test
+people用户 hadoop用户组
+-R递归修改文件夹下所有文件
+- h选项意味着在改变符号链接文件的属主时不影响该链接所指向的目标文件。
+
+单独修改所属者
+chown people myfile
+单独修改组
+chgrp hadoop myfile
+查看自己属于哪个组
+[people@hadoop-s5 shell_test]$ whoami
+people
+[people@hadoop-s5 shell_test]$ group
+-bash: group: command not found
+[people@hadoop-s5 shell_test]$ id
+uid=1006(people) gid=1006(people) groups=1006(people)
+[people@hadoop-s5 shell_test]$ id hdfs
+uid=495(hdfs) gid=501(hdfs) groups=501(hdfs),500(hadoop)
+hdfs是非当前登录用户
+
+4.查看系统版本
+[people@hadoop-s5 shell_test]$ uname -a
+Linux hadoop-s5.hadoop.com 2.6.32-431.el6.x86_64 #1 SMP Fri Nov 22 03:15:09 UTC 2013 x86_64 x86_64 x86_64 GNU/Linux
+可以看出是linux64位
+
+5.建立软连接
+ln -s source_path target_path
+
+6.find命令
+按名字查找，支持正则
+find ~  -name "*.java" -print  所有.java后缀名字
+find ~ -name "[A-Z]*" -print 所有以大写字母开头的文件名
+按时间查找
+find / -mtime -5 -print 查找更改时间在5日以内的文件
+find /var/adm -mtime +3 -print 更改时间在3日以前的文件
+f i n d命令从文件系统的根目录开始，查找一个名为C O N . F I L E的文件。
+它将首先匹配所有的文件然后再进入子目录中查找。
+find / -name "CON.FILE" -depth -print
+
+执行命令，对找到的文件
+方式1： find ~  -name "*.java" -exec ls -lh {} \;
+缺点：一次性把所有找到的文件传给exec，可能会报错，参数太长
+方式2：find ~ -name "*.java" | xargs grep "org.hadoop"
+
+7.后台执行命令
+名词解释：
+cron 系统调度进程。可以使用它在每天的非高峰负荷时间段运行作业，或在一周或一月
+中的不同时段运行。
+At at命令。使用它在一个特定的时间运行一些特殊的作业，或在晚一些的非负荷高峰时
+间段或高峰负荷时间段运行。
+& 使用它在后台运行一个占用时间不长的进程。
+Nohup 使用它在后台运行一个命令，即使在用户退出时也不受影响。
+7.1 crontab
+下面是c r o n t a b的格式：
+分< >时< >日< >月< >星期< >要运行的命令
+其中< >表示空格。
+10 1 * * 6,0 /bin/find -name "core" -exec rm {} \;
+上面的例子表示每周六、周日的1 : 1 0运行一个f i n d命令。
+0,30 18-23 * * * /apps/bin/dbcheck.sh
+上面的例子表示在每天1 8 : 0 0至2 3 : 0 0之间每隔3 0分钟运行/ a p p s / b i n目录下的d b c h e c k . s h。
+Crontab [-u user] -e(edit) -l(list) -r(rm)
+
+linux 系统中通过编辑crontab -e 写入到什么文件中去了
+答：在 /var/spool/cron路径下有用自己用户命名的文件，就写入该文件了，以people用户为例：
+[root@hadoop-s5 cron]# pwd
+/var/spool/cron
+[root@hadoop-s5 cron]# ll
+total 8
+-rw------- 1 hdfs   hdfs     0 Dec  8  2016 hdfs
+-rw------- 1 people people 659 Jun  5  2018 people
+-rw------- 1 root   root   208 Mar  5  2018 root
+-rw------- 1 sotpzr sotpzr   0 Jun  2  2017 sotpzr
+[root@hadoop-s5 cron]# cat people 
+15 00 * * * sh /home/people/verify_bench/sotp_risk/data_producer/org_log/tet.sh 2016-10-16 2016-11-23 >> /home/people/verify_bench/sotp_risk/data_producer/org_log/crontab.log 2>&1
+所有的标准输出和错误输出都被重定向到crontab.log了
+
+7.2后台运行
+&：find /etc -name "stm.conf" -print  >find.log 2>&1 &
+nohup command & 账号退出后继续运行
+
+8.字符串匹配，元字符
+* 匹配文件名中的任何字符串，包括空字符串。
+？ 匹配文件名中的任何单个字符。
+[...] 匹配[ ]中所包含的任何字符。
+[!...] 匹配[ ]中非感叹号！之后的字符 非
+[io]kk.log 匹配以i 或者 o 开头的文件
+
+9.输入输出
+echo "hello" > test.txt
+echo "world" >> test.txt 追加
+command file 2 > &1 将标准输出和标准错误同时输出到file中
+
+10.命令执行顺序
+&& || （）
+
+
+查看系统版本
+性能测试查看命令
+
+
+
+
+
