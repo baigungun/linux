@@ -1,0 +1,71 @@
+1.求平均值和总和
+test的内容
+zhangsan     80
+lisi         81.5
+wangwu       93
+zhangsan     85
+lisi         88
+wangwu       97
+zhangsan     90
+lisi         92
+wangwu       88
+要求输出格式：（average：平均成绩，total：总成绩）
+name#######average#######total
+zhangsan            xxx                        xxx
+lisi                       xxx                        xxx
+wangwu             xxx                        xxx
+答案一：
+awk '{a[$1]+=$2;b[$1]++};END{for(i in a)print i,a[i]/b[i],a[i]}' test.txt
+cat score.txt |awk 'BEGIN{print "name\tavg\ttotal"};{a[$1]+=$2;b[$1]++};END{for(i in a) print i"\t"a[i]/b[i]"\t"a[i]}'
+
+2.求最大值
+有个一个文件 file，内容如下
+
+1.1.1.1       st_000012       ajgoahgoahgoahgghg
+2.2.2.2       st_000014       ajgoaoghaughughgu
+3.3.3.3       st_000015       alfjoigrhuogrub
+4.4.4.4       st_000016       ajgoaghkaahgoahgghg
+1.1.1.1       st_000019       ajgoalllllghughgu
+5.5.5.5       st_000015       alfjoigrhuogrub
+
+找到第一列中出现最多的ip，第二列中出现最多的用户名，必须要用awk
+cat ip.txt |awk -F" " 'BEGIN{maxIP="";maxIPCnt=0;};{iparr[$1]++;};END{for(ip in iparr){if(iparr[ip]>maxIPCnt) maxIPCnt=iparr[ip];maxIP=ip};print maxIP,maxIPCnt}'
+
+3.已知文件a.txt，第一列是文件名，第二列是版本号，打印出每个文件最大的版本号一行。（要求使用awk）
+
+[root@w ~]# awk '{print}' a
+file 100
+dir 11
+file 100
+dir 11
+file 102
+dir 112
+file 120
+dir 119
+ cat score.txt |awk -F" " '{if(score[$1]<$2) score[$1]=$2 };END{for(s in score) print s,score[s]}'
+
+3.求最多出现的域名
+cat dns.txt |awk -F"/" '{arr[$3]++}END{for(key in arr) print key,arr[key]}'|sort -k2
+或者
+cut -d "/" -f 3 dns.txt |sort|uniq -c
+1 mp3.etiantian.org
+      2 post.etiantian.org
+      3 www.etiantian.org
+补充uniq命令
+uniq -c 左边打印出现次数
+uniq -d仅仅显示重复出现的行列
+uniq -u仅仅显示出现一次的行列
+sort命令用法
+sort -n 以数字排序
+sort -r 反转
+sort -u 排除重复项
+sort -n -k 2 -t'-' date      // -t<分隔字符>   指定排序时所用的栏位分隔字符。  -k  选择以哪个区间进行排序
+2017-01-09
+2017-04-24
+2017-10-23
+2017-12-02
+以前两列进行排序，逗号表示结束阈。表示只对当前阈进行排序。如果不接逗号-k1这种表示对第一阈到最后一阈进行排序。
+sort -t$"," -k1,1 -k2nr,2 data.txt
+以上写法是比较精准的写法
+参考：https://www.cnblogs.com/longjshz/p/5797933.html
+
