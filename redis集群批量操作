@@ -1,0 +1,9 @@
+redis集群 
+port 6379,6380
+ip  192.168.1.121;192.168.1.122;192.168.1.123
+
+
+清空集群redis中所有内容
+for ip in 121 122 123; do  for port in 6379 6380; do redis-cli -h 192.168.1.$ip -p $port flushall ; done; done
+清空集群redis中key以rt_pos_lastcard开头的所有内容
+for ip in 121 122 123; do  for port in 6379 6380; do redis-cli -h 192.168.1.$ip -p $port keys "rt_pos_lastcard*" | xargs redis-cli -h 192.168.1.$ip -p $port del   ; done; done
